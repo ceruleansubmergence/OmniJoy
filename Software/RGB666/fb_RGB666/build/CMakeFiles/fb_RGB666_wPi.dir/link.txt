@@ -1,0 +1,1 @@
+/usr/bin/cc     CMakeFiles/fb_RGB666_wPi.dir/fb_RGB666_wiringPi.c.o  -o fb_RGB666_wPi  -L/opt/vc/lib -rdynamic -lbcm_host -lwiringPi -Wl,-rpath,/opt/vc/lib 

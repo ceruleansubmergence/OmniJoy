@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# Script to auto-reset omnijoy
+#
+# Enables Arduino programming from the GUI using a
+# Raspberry Pi ttl serial and a GPIO reset.
+#
+# The arduino bootloader has a timeout built in (1s?).
+# If the programmer (avrdude) talks to it within this
+# amount of time, programming works.  Otherwise, it starts
+# running the code that's already there.
+#
+# This script hi-jacks avrdude and triggers the GPIO reset
+# line, emulating the rts/dtr function that is normally
+# found on a serial port.
+#
+# Usage:
+#
+# 1.  Rename avrdude in /usr/bin to avrdude-actual:
+#
+#    sudo mv /usr/bin/avrdude /usr/bin/avrdude-actual
+#
+# 2.  Make sure this script is executable
+#
+#    chmod +x avrdude-omnijoy
+#
+# 3.  Copy this script into avrdude's original spot
+#
+#    sudo mv avrdude-omnijoy /usr/bin/avrdude
+#
+# 4.  Change RESET_PIN to match the GPIO pin you're using.
+#    This is a wiringPi pin number.  See http://pinout.xyz
+#
+# 5.  Timing on your system may be different.  Tweak it.
+#    look for "Triggering Reset Now" when you try to
+#    program.  This should interrupt the initial block of
+#    of text outputted from avrdude-actual.  Alter DELAY_TIME
+#    as needed to get your code to upload.
+
+DELAY_TIME=1.0
+RESET_PIN=7
+
+echo "Running auto-reset version of avrdude"
+
+# Reset is connected to BCM4 (wiringPi #7)
+gpio mode "$RESET_PIN" out
+
+# Launch avrdude in the background
+avrdude-actual "$@" &
+
+sleep "$DELAY_TIME"s
+echo "Triggering Reset Now"
+gpio write "$RESET_PIN" 0
+sleep 0.001s
+gpio write "$RESET_PIN" 1
