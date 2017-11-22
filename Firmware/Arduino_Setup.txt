@@ -1,0 +1,64 @@
+
+AVR/Arduino Setup
+
+Have to set up fuses for 8MHz internal clock
+Have to upload 8Mhz bootloader from Pro Mini
+Have to set upload speed to 57600
+Update Boards.txt to add OmniJoy Mini
+Create OmniJoy pins_arduino.h to enable PB6&7
+  - Based on "standard" variant
+  - Changed NUM_ANALOG_INPUTS to 8
+  - Changed NUM_DIGITAL_INPUTS to 22
+  - Modified 3 arrays to add PB6&7 to end
+    - digital_pin_to_port_PGM
+    - digital_pin_to_bit_mask_PGM
+    - digital_pin_to_timer_PGM
+  - install in new "omnijoy" directory under variants
+  - 
+
+
+Set fuses with the command:
+
+"C:\Program Files\Arduino\hardware\tools\avr/bin/avrdude" -C"C:\Program Files\Arduino\hardware\tools\avr/etc/avrdude.conf" -v -patmega328p -cusbasp -Pusb -e -Ulock:w:0x3F:m -Uefuse:w:0xFC:m -Uhfuse:w:0xDA:m -Ulfuse:w:0xE2:m
+
+Program bootloader and protect the bootloader memory:
+
+"C:\Program Files\Arduino\hardware\tools\avr/bin/avrdude" -C"C:\Program Files\Arduino\hardware\tools\avr/etc/avrdude.conf" -v -patmega328p -cusbasp -Pusb -Uflash:w:"C:\Program Files\Arduino\hardware\arduino\avr/bootloaders/atmega/ATmegaBOOT_168_atmega328.hex":i -Ulock:w:0x0F:m
+
+Add the following to the end of the boards.txt file in your Arduino install directory:
+
+##############################################################
+
+omnijoy_m.name=OmniJoy Mini
+
+omnijoy_m.upload.tool=avrdude
+omnijoy_m.upload.protocol=arduino
+
+omnijoy_m.bootloader.tool=avrdude
+omnijoy_m.bootloader.low_fuses=0xe2
+omnijoy_m.bootloader.unlock_bits=0x3F
+omnijoy_m.bootloader.lock_bits=0x0F
+
+omnijoy_m.build.f_cpu=8000000L
+omnijoy_m.build.board=OMNIJOY
+omnijoy_m.build.core=arduino
+omnijoy_m.build.variant=omnijoy
+
+
+## Custom OmniJoy Mini Board
+## -------------------------
+
+omnijoy_m.menu.cpu.atmega328=ATmega328p (5V, 8MHz)
+
+omnijoy_m.menu.cpu.atmega328.upload.maximum_size=30720
+omnijoy_m.menu.cpu.atmega328.upload.maximum_data_size=2048
+omnijoy_m.menu.cpu.atmega328.upload.speed=57600
+
+omnijoy_m.menu.cpu.atmega328.bootloader.high_fuses=0xda
+omnijoy_m.menu.cpu.atmega328.bootloader.extended_fuses=0x05
+omnijoy_m.menu.cpu.atmega328.bootloader.file=atmega/ATmegaBOOT_168_atmega328_pro_8MHz.hex
+
+omnijoy_m.menu.cpu.atmega328.build.mcu=atmega328p
+
+
+##############################################################
