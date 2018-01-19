@@ -1,0 +1,61 @@
+Rev 1 Changelog:
+
+Fixes:
+
+- Fixed footprint problems found with Rev 0
+  - Button layout
+  - Inverted diode footprint
+- Fixed circuit connection problems found with Rev 0
+  - Tied MCP73871 CE line to Vin
+  - Grounded unused data lines on the TFT display
+
+
+Changes:
+
+- Connected display via DPI/RGB interface
+- Increased board dimensions to match case dimensions
+- Moved on/off switch in order to remove interference with Pi HDMI connector and moved Pi to make HDMI more accessible
+- Adjusted component placement to simplify case construction
+- Replaced level converter IC with FET level converters
+- Changed boost supply to MIC2253 from LT1935
+- Changed touch screen controller to STMPE811 from TSC2046 to switch from SPI to I2C (needed for DPI/RGB Interface)
+- Moved battery voltage and current sensing to STMPE811
+- Relocated all parts that were below the TFT display
+- Increased keepout area below positive battery terminals
+- Changed from stereo audio to mono as IO was needed for other functions
+- Removed unneeded connection to INTB on MCP23S17
+- Removed right/left handed navigation switch/button layout
+- Adjusted buttons on face to be more "normal"
+
+
+Additions:
+
+- Added footprint for optional CTS mini-joystick in place of PSP1000.
+- Increased circuit protection by adding
+  - TVS on micro-USB charge connector
+  - Self-reseting fuses on each battery
+- Added electrolytic capacitor near USB-A to reduce in-rush problems with USB bus
+- Added current sensing to battery lines using INA181A
+  - Unidirectional by default
+  - Bidirectional component footprints placed but not populated and likely unnecessary
+- Added dedicated CPPM output header
+- Added Mosfet power protection and switching (on/off circuit)
+- Added power indicator LED
+- Added additional components needed to restore functionality lost from switch to DPI/RGB mode:
+  - CP2120 SPI to I2C bridge to provide "native" I2C and GPIO
+    - 8 GPIO broken out to header (not populated)
+  - PCA9685 LED/PWM Driver connected to:
+    - TFT Backlight
+    - 2 RGB LED footprints (not populated)
+    - 3 standard LED footprints (not populated)
+    - 8 pin header connected to power and 6 PWM spares (not populated)
+  - Footprint for I2C UART (SC16IS750IBS) with support components
+    - Not to be populated for budgetary reasons.  Potential "stretch" goal.
+    - Serial lines connected to pin header (RXD, TXT, RTS, CTS, GND, 3.3V)
+    - Spare GPIO connected to pin header
+    - Connected to Arduino to allow for self-programming of on-board Arduino.
+- Added footprint for T1 (3mm) IR LED and drive FET for potential LIRC use.
+  - Used to make OmniJoy a universal infrared remote control (i.e. TVs, etc)
+  - Not to be populated for budgetary reasons.  Potential "stretch" goal.
+- Added footprints for two buttons on the back of the board.
+  - Not to be populated.  Placed for testing purposes.
